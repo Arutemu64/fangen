@@ -1,0 +1,5 @@
+event_name = "fanfan2025"
+email = "example@fancom.info"
+password = "passw0rd"
+dict_path = "./dictionary.json"
+db_path = "./database.db"

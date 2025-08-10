@@ -1,0 +1,27 @@
+[project]
+name = "fangen"
+version = "0.1.0"
+description = "Cosplay2Excel parser"
+classifiers = ["Private :: Do Not Upload"]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "adaptix>=3.0.0b9",
+    "openpyxl>=3.1.5",
+    "requests>=2.32.3",
+    "sqlalchemy>=2.0.37",
+    "typer>=0.15.1",
+]
+
+[project.scripts]
+fangen = "fangen.__main__:app"
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.14.2",
+    "ruff>=0.9.3",
+]
