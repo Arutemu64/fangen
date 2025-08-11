@@ -2,6 +2,7 @@ from pathlib import Path
 
 from openpyxl import load_workbook, Workbook
 from rich import print
+from rich.progress import track
 from sqlalchemy.orm import Session
 
 from fangen.config import Config
@@ -16,32 +17,40 @@ from fangen.plan.formatting import (
 ALLOWED_PLAN_NODE_TYPES = [PlanNodeType.EVENT, PlanNodeType.TOPIC, PlanNodeType.REQUEST]
 
 
-def make_plan(filepath: Path, session: Session, config: Config) -> None:
-    plan_nodes = get_plan_nodes(session)
-
+def check_excel_file(filepath: Path):
     try:
-        wb = load_workbook(filepath)
-        print("Открыт ранее созданный файл.")
+        with open(filepath, "a"):
+            pass
+    except PermissionError:
+        raise PermissionError("Закройте Excel-файл для обновления")
 
-    except FileNotFoundError:
+
+def make_plan(filepath: Path, session: Session, config: Config) -> None:
+    if filepath.exists():
+        check_excel_file(filepath)
+        wb = load_workbook(filepath)
+        print(f"💻 Открыт ранее созданный файл {filepath}")
+    else:
+        print(f"💻 Будет создан новый файл {filepath}")
         wb = Workbook()
         ws = wb.active
         ws.title = "Лист1"
         basic_headers = ["{Инфо}"]
         ws.append(basic_headers)
-        print(f"Был создан новый файл {filepath.absolute()}")
+
+    plan_nodes = get_plan_nodes(session)
 
     for sheet in wb.worksheets:
-        print(f"Заполняем лист {sheet.title}")
+        print(f"""📄 Обрабатываем лист '{sheet.title}'...""")
         first_row = sheet[1]
         headers = [cell.value for cell in first_row]
-        print(headers)
+        print(f"🎩 Заголовки: {headers}")
 
         sheet.delete_rows(2, sheet.max_row - 1)
 
         current_row_index = 2
         request_number = 1
-        for node in plan_nodes:
+        for node in track(plan_nodes, "✏️ Заполняем строки..."):
             if node.type in ALLOWED_PLAN_NODE_TYPES:
                 current_row = sheet[current_row_index]
                 context = get_node_context(
@@ -50,9 +59,10 @@ def make_plan(filepath: Path, session: Session, config: Config) -> None:
 
                 for cell in current_row:
                     header = headers[current_row.index(cell)]
-                    cell.value = format_header(
-                        header, context, dict_path=config.dict_path
-                    )
+                    if isinstance(header, str):
+                        cell.value = format_header(
+                            header, context, dict_path=config.dict_path
+                        )
 
                 if node.type == PlanNodeType.REQUEST:
                     request_number += 1
@@ -60,7 +70,8 @@ def make_plan(filepath: Path, session: Session, config: Config) -> None:
                 apply_row_style(node, current_row, (current_row_index % 2 == 0))
                 current_row_index += 1
 
+        print("🧹 Наводим красоту...")
         apply_final_formatting(sheet)
 
     wb.save(filepath)
-    print(f"Файл сохранен по пути {filepath.absolute()}")
+    print(f"💾 Файл сохранен по пути {filepath.absolute()}")

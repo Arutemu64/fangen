@@ -12,7 +12,7 @@ from fangen.plan.make_plan import make_plan
 
 from rich import print
 
-app = typer.Typer(pretty_exceptions_enable=False)
+app = typer.Typer()
 logging.basicConfig(level=logging.INFO)
 
 

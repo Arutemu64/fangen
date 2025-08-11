@@ -6,7 +6,8 @@ from openpyxl.worksheet.worksheet import Worksheet
 from fangen.cosplay2.models.plan import PlanNodeType
 from fangen.db.models.node import PlanNode
 
-MAX_CELL_LENGTH = 70
+MAX_CELL_LENGTH = 65
+PADDING = 2
 
 # Header styles
 HEADER_ROW_FILL = PatternFill(
@@ -40,7 +41,7 @@ def apply_final_formatting(ws: Worksheet):
             if cell.value:
                 max_length = max(max_length, len(str(cell.value)))
         column_letter = get_column_letter(col_idx)
-        final_length = max_length + 2  # Padding
+        final_length = max_length + PADDING
         if final_length < MAX_CELL_LENGTH:
             ws.column_dimensions[column_letter].width = final_length
         else:

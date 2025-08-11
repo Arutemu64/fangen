@@ -10,34 +10,34 @@ from fangen.db.models.node import PlanNode
 
 
 def make_db(client: Cosplay2Client, db_path: Path):
-    print("Начинаем наполнение базы данных...")
+    print("🌐 Начинаем наполнение базы данных...")
     create_db(db_path=db_path)
     session = get_session(db_path=db_path)
 
     with session:
         # Seed topics
-        print("Сохраняем номинации...")
+        print("💾 Сохраняем номинации...")
         topics = client.get_topics()
         session.add_all([Topic.from_dto(topic) for topic in topics])
         session.flush()
-        print(f"Сохранено {len(topics)} номинаций")
+        print(f"💾 Сохранено {len(topics)} номинаций")
 
         # Seed requests
-        print("Сохраняем заявки...")
+        print("💾 Сохраняем заявки...")
         requests = client.get_all_requests()
         session.add_all([Request.from_dto(req) for req in requests])
         session.flush()
-        print(f"Сохранено {len(requests)} заявок")
+        print(f"💾 Сохранено {len(requests)} заявок")
 
         # Seed values
-        print("Сохраняем данные...")
+        print("💾 Сохраняем данные...")
         values = client.get_all_values()
         session.add_all(RequestValue.from_dto(val) for val in values)
         session.flush()
-        print(f"Сохранено {len(values)} строк данных")
+        print(f"💾 Сохранено {len(values)} строк данных")
 
         # Seed plan
-        print("Сохраняем расписание...")
+        print("💾 Сохраняем расписание...")
         plan = client.get_plan()
 
         def proceed_node(node: PlanNodeDTO, parent_id: str | None = None):
@@ -55,4 +55,4 @@ def make_db(client: Cosplay2Client, db_path: Path):
 
         # Commit
         session.commit()
-        print(f"Готово! База данных располагается тут: {db_path.absolute()}")
+        print(f"💾 Готово! База данных располагается тут: {db_path.absolute()}")
