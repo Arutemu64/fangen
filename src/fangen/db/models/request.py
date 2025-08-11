@@ -1,7 +1,8 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from fangen.cosplay2.models.request import RequestStatus, RequestDTO
+from fangen.cosplay2.models.request import RequestDTO
+from fangen.cosplay2.models.vo import RequestStatus
 from fangen.db.models.base import Base
 from fangen.db.models.topic import Topic
 from fangen.db.models.value import RequestValue
@@ -19,7 +20,9 @@ class Request(Base):
     voting_title: Mapped[int | None] = mapped_column()
 
     topic: Mapped[Topic] = relationship(viewonly=True)
-    values: Mapped[list[RequestValue]] = relationship(viewonly=True)
+    values: Mapped[list[RequestValue]] = relationship(
+        viewonly=True, order_by=RequestValue.id
+    )
 
     @classmethod
     def from_dto(cls, dto: RequestDTO):

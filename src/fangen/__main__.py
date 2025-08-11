@@ -8,7 +8,8 @@ from fangen.config import load_config, Config
 from fangen.cosplay2.client import Cosplay2Client
 from fangen.db.factory import get_session
 from fangen.db.make_db import make_db
-from fangen.plan.make_plan import make_plan
+from fangen.excel.make_data import make_data
+from fangen.excel.make_plan import make_plan
 
 from rich import print
 
@@ -56,11 +57,21 @@ def make_db_command(ctx: typer.Context) -> None:
 @app.command(name="make_plan", help="Заполняет план данными из заявок")
 def make_plan_command(
     ctx: typer.Context,
-    filepath: Path = typer.Argument(Path("./excel.xlsx"), help="Путь к файлу Excel"),
+    filepath: Path = typer.Argument(Path("./plan.xlsx"), help="Путь к файлу Excel"),
 ):
     config: Config = ctx.obj.config
     session = get_session(db_path=config.db_path)
     make_plan(filepath=filepath, session=session, config=config)
+
+
+@app.command(name="make_data", help="Экспортирует данные заявок в Excel-файл")
+def make_data_command(
+    ctx: typer.Context,
+    filepath: Path = typer.Argument(Path("./excel.xlsx"), help="Путь к файлу Excel"),
+):
+    config: Config = ctx.obj.config
+    session = get_session(db_path=config.db_path)
+    make_data(filepath=filepath, session=session, config=config)
 
 
 if __name__ == "__main__":

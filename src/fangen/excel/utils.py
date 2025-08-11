@@ -5,9 +5,8 @@ from contextlib import suppress
 from json import JSONDecodeError
 from pathlib import Path
 
-from fangen.cosplay2.models.plan import PlanNodeType
-from fangen.cosplay2.models.value import ValueType
-from fangen.db.models import RequestValue
+from fangen.cosplay2.models.vo import ValueType, PlanNodeType
+from fangen.db.models import RequestValue, Request, Topic
 from fangen.db.models.node import PlanNode
 
 
@@ -24,7 +23,7 @@ def format_timestamp(time: int) -> str:
     )
 
 
-def preprocess_request_value(value: RequestValue) -> str:
+def parse_value(value: RequestValue) -> str:
     if value.type is ValueType.CHECKBOX:
         if value.value == "YES":
             return "Да"
@@ -44,6 +43,12 @@ def preprocess_request_value(value: RequestValue) -> str:
                 return f"Файл: {filename}"
             if link := file_info.get("link"):
                 return f"Ссылка: {link}"
+    if value.type is ValueType.DURATION:
+        td = datetime.timedelta(minutes=float(value.value))
+        total_seconds = int(td.total_seconds())
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        return f"{minutes:02d}:{seconds:02d}"
     return str(value.value)
 
 
@@ -54,21 +59,20 @@ def parse_event_node(event: PlanNode) -> dict:
     }
 
 
-def parse_topic_node(topic: PlanNode) -> dict:
-    return {"info": topic.title, "code": topic.topic.card_code}
+def parse_topic(topic: Topic) -> dict:
+    return {"info": topic.title, "code": topic.card_code}
 
 
-def parse_request_node(request: PlanNode, event_name: str) -> dict:
+def parse_request(request: Request, event_name: str) -> dict:
     data: NodeContext = {
-        "info": f"{request.request.voting_title}\n({generate_request_link(request.request_id, event_name)})",
-        "title": request.request.voting_title,
+        "info": f"{request.voting_title}\n({generate_request_link(request.id, event_name)})",
+        "title": request.voting_title,
         "code": request.topic.card_code if request.topic else None,
-        "card": request.request.voting_number,
-        "time": format_timestamp(request.time_start) if request.time_start else None,
+        "card": request.voting_number,
     }
-    for value in request.request.values:
+    for value in request.values:
         value: RequestValue
-        processed_value = preprocess_request_value(value)
+        processed_value = parse_value(value)
         # If there are multiple values with same
         # key put them in a list
         existing_value = data.get(value.title)
@@ -92,14 +96,15 @@ def get_node_context(
         "request_length": node.request_length,
         "time_start": node.time_start,
         "time_end": node.time_end,
+        "time": format_timestamp(node.time_start) if node.time_start else None,
     }
     if node.type is PlanNodeType.EVENT:
         data.update(parse_event_node(node))
     if node.type is PlanNodeType.TOPIC:
-        data.update(parse_topic_node(node))
+        data.update(parse_topic(node.topic))
     if node.type is PlanNodeType.REQUEST:
         data.update({"n": request_number})
-        data.update(parse_request_node(node, event_name))
+        data.update(parse_request(node.request, event_name))
     return data
 
 
@@ -123,3 +128,11 @@ def format_header(header: str, context: NodeContext, dict_path: Path) -> str:
         return str(value) if value else None
 
     return re.sub(variable_pattern, replace_match, header)
+
+
+def check_excel_file(filepath: Path):
+    try:
+        with open(filepath, "a"):
+            pass
+    except PermissionError:
+        raise PermissionError("Закройте Excel-файл для обновления")

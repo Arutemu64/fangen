@@ -1,14 +1,6 @@
-import enum
 from dataclasses import dataclass
 
-
-class RequestStatus(enum.StrEnum):
-    PENDING = "pending"
-    WAITING = "waiting"
-    MATERIALS = "materials"
-    REVIEW = "review"
-    APPROVED = "approved"
-    DISAPPROVED = "disapproved"
+from fangen.cosplay2.models.vo import RequestStatus
 
 
 @dataclass(slots=True, frozen=True)

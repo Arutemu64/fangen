@@ -6,23 +6,16 @@ from rich.progress import track
 from sqlalchemy.orm import Session
 
 from fangen.config import Config
-from fangen.cosplay2.models.plan import PlanNodeType
+from fangen.cosplay2.models.vo import PlanNodeType
 from fangen.db.repo import get_plan_nodes
-from fangen.plan.utils import get_node_context, format_header
-from fangen.plan.formatting import (
+from fangen.excel.utils import get_node_context, format_header, check_excel_file
+from fangen.excel.formatting import (
     apply_final_formatting,
-    apply_row_style,
+    TOPIC_ROW_FONT,
+    EVEN_ROW_FILL,
 )
 
 ALLOWED_PLAN_NODE_TYPES = [PlanNodeType.EVENT, PlanNodeType.TOPIC, PlanNodeType.REQUEST]
-
-
-def check_excel_file(filepath: Path):
-    try:
-        with open(filepath, "a"):
-            pass
-    except PermissionError:
-        raise PermissionError("Закройте Excel-файл для обновления")
 
 
 def make_plan(filepath: Path, session: Session, config: Config) -> None:
@@ -38,6 +31,7 @@ def make_plan(filepath: Path, session: Session, config: Config) -> None:
         basic_headers = ["{Инфо}"]
         ws.append(basic_headers)
 
+    print("💻 Загружаем расписание и данные...")
     plan_nodes = get_plan_nodes(session)
 
     for sheet in wb.worksheets:
@@ -63,14 +57,18 @@ def make_plan(filepath: Path, session: Session, config: Config) -> None:
                         cell.value = format_header(
                             header, context, dict_path=config.dict_path
                         )
+                    if node.type is PlanNodeType.TOPIC:
+                        cell.font = TOPIC_ROW_FONT
+                    if current_row_index % 2 == 0:
+                        cell.fill = EVEN_ROW_FILL
 
                 if node.type == PlanNodeType.REQUEST:
                     request_number += 1
 
-                apply_row_style(node, current_row, (current_row_index % 2 == 0))
                 current_row_index += 1
 
-        print("🧹 Наводим красоту...")
+    print("🧹 Наводим красоту...")
+    for sheet in wb.worksheets:
         apply_final_formatting(sheet)
 
     wb.save(filepath)

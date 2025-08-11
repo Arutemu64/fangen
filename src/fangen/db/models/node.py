@@ -1,7 +1,8 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
-from fangen.cosplay2.models.plan import PlanNodeType, PlanNodeDTO
+from fangen.cosplay2.models.plan import PlanNodeDTO
+from fangen.cosplay2.models.vo import PlanNodeType
 from fangen.db.models import Base, Request, Topic
 
 

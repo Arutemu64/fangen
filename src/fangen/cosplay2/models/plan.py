@@ -1,14 +1,6 @@
-import enum
 from dataclasses import dataclass
 
-
-class PlanNodeType(enum.StrEnum):
-    PLACE = "place"
-    DAY = "day"
-    EVENT = "event"
-    TOPIC = "topic"
-    REQUEST = "request"
-    BREAK = "break"
+from fangen.cosplay2.models.vo import PlanNodeType
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)

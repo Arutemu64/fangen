@@ -3,7 +3,8 @@ import typing
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from fangen.cosplay2.models.value import ValueType, RequestValueDTO
+from fangen.cosplay2.models.value import RequestValueDTO
+from fangen.cosplay2.models.vo import ValueType
 from fangen.db.models.base import Base
 
 if typing.TYPE_CHECKING:

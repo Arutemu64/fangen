@@ -6,7 +6,7 @@ from adaptix import Retort
 from requests import Session, HTTPError
 from requests.utils import cookiejar_from_dict, dict_from_cookiejar
 
-from fangen.cosplay2.models.topic import TopicDTO
+from fangen.cosplay2.models.topic import TopicDTO, TopicWithFieldsDTO
 from fangen.cosplay2.models.plan import PlanNodeDTO
 from fangen.cosplay2.models.request import RequestDTO
 from fangen.cosplay2.models.value import RequestValueDTO
@@ -62,7 +62,7 @@ class Cosplay2Client:
                 raise HTTPError(msg) from e
             return False
 
-    def get_topics(self) -> list[TopicDTO]:
+    def get_list(self) -> list[TopicDTO]:
         url = self.base_url + "topics/get_list"
         response = self.session.get(url=url, headers=self.headers)
         data = response.json()
@@ -85,3 +85,11 @@ class Cosplay2Client:
         response = self.session.get(url=url, headers=self.headers)
         data = response.json()
         return self.retort.load(data, list[RequestValueDTO])
+
+    def get_with_fields(self, topic_url_code: str) -> TopicWithFieldsDTO:
+        url = self.base_url + "topics/get_with_fields"
+        response = self.session.post(
+            url=url, json={"topic_url_code": topic_url_code}, headers=self.headers
+        )
+        data = response.json()
+        return self.retort.load(data, TopicWithFieldsDTO)
