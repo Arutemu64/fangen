@@ -1,5 +1,29 @@
-event_name = "fanfan2025"
-email = "example@fancom.info"
-password = "passw0rd"
-dict_path = "./dictionary.json"
-db_path = "./database.db"
+# ОСНОВНЫЕ НАСТРОЙКИ
+event_name = "fanfan2025summer"     # ID события (субдомен фестиваля)
+email = "email@fancom.info"         # Почта от Cosplay2
+password = "passw0rd"               # Пароль от Cosplay2
+db_path = "./database.db"           # Путь к базе данных
+dict_path = "./dictionary.json"     # Путь к словарю
+
+# НАСТРОЙКИ ЗАПОЛНЕНИЯ EXCEL-ФАЙЛОВ
+max_cell_length = 50
+
+# НАСТРОЙКИ ЗАГРУЗЧИКА И СОРТИРОВЩИКА ФАЙЛОВ
+dry_run = false
+skip_fields = ["Видео или аудио репетиции", "Световой сценарий"]
+
+allowed_exts = ["avi", "mp4", "mov", "wmv", "mkv",
+    "mp3", "wav", "flac", "ogg", "m4a", "aac"]
+
+# Папка для скачивания файлов
+files_folder = "./files"
+
+# Папка для отсортированных файлов
+move_folder = "./stage"
+
+# Настройки имен файлов
+max_title_length = 80
+filename_template = "{n} [{Начало выступления}] {title} №{card} {value_title}"
+
+# Режим сцены
+stage_mode = true

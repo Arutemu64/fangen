@@ -14,10 +14,11 @@ class Request(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     topic_id: Mapped[int] = mapped_column(ForeignKey("topics.id"))
     status: Mapped[RequestStatus] = mapped_column()
+    update_time: Mapped[str] = mapped_column()
     number: Mapped[int] = mapped_column()
     user_title: Mapped[str] = mapped_column()
     voting_number: Mapped[int | None] = mapped_column()
-    voting_title: Mapped[int | None] = mapped_column()
+    voting_title: Mapped[str | None] = mapped_column()
 
     topic: Mapped[Topic] = relationship(viewonly=True)
     values: Mapped[list[RequestValue]] = relationship(
@@ -30,6 +31,7 @@ class Request(Base):
             id=dto.id,
             topic_id=dto.topic_id,
             status=dto.status,
+            update_time=dto.update_time,
             number=dto.number,
             user_title=dto.user_title,
             voting_number=dto.voting_number,

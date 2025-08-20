@@ -5,8 +5,8 @@ from rich.progress import track
 
 from fangen.cosplay2.client import Cosplay2Client
 from fangen.cosplay2.models.plan import PlanNodeDTO
-from fangen.db.factory import get_session, create_db
-from fangen.db.models import Topic, Request, RequestValue, TopicSection, TopicField
+from fangen.db.factory import create_db, get_session
+from fangen.db.models import Request, RequestValue, Topic, TopicField, TopicSection
 from fangen.db.models.node import PlanNode
 
 

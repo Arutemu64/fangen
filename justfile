@@ -15,13 +15,14 @@ install:
 
 # Build exe
 build-exe:
-    pyinstaller src/fangen/__main__.py --onefile -n fangen
+    pyinstaller src/fangen/__main__.py -n fangen
 
 # Bundle release
 bundle-exe: build-exe
     cp config.dist.toml ./dist/config.toml
     cp dictionary.json ./dist/dictionary.json
     cd dist && rm -f release.zip
-    cd dist && 7z a release.zip fangen.exe config.toml dictionary.json
+    cd dist && cp -r ./fangen/. ./
+    cd dist && 7z a release.zip fangen.exe config.toml dictionary.json _internal
 
 

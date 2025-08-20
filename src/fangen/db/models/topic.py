@@ -1,7 +1,7 @@
 import typing
 
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from fangen.cosplay2.models.topic import TopicDTO, TopicFieldDTO, TopicSectionDTO
 from fangen.cosplay2.models.vo import ValueType
@@ -61,7 +61,9 @@ class Topic(Base):
     title: Mapped[str] = mapped_column()
     order: Mapped[int] = mapped_column()
 
-    sections: Mapped[list[TopicSection]] = relationship(viewonly=True, order_by=TopicSection.order)
+    sections: Mapped[list[TopicSection]] = relationship(
+        viewonly=True, order_by=TopicSection.order
+    )
     fields: Mapped[list[TopicField]] = relationship(
         order_by=(TopicSection.order, TopicField.order),
         viewonly=True,

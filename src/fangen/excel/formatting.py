@@ -1,4 +1,4 @@
-from openpyxl.styles import PatternFill, Font, Alignment
+from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
@@ -15,7 +15,12 @@ TOPIC_ROW_FONT = Font(color="000000", bold=True)
 EVEN_ROW_FILL = PatternFill(start_color="e2efda", end_color="e2efda", fill_type="solid")
 
 
-def apply_final_formatting(ws: Worksheet, max_cell_length: int = 60, padding: int = 2):
+def apply_final_formatting(
+    ws: Worksheet,
+    max_cell_length: int = 60,
+    padding: int = 2,
+    freeze_cell: str = "A2",  # Header
+):
     header_row = ws[1]
     for cell in header_row:
         cell.fill = HEADER_ROW_FILL
@@ -39,4 +44,4 @@ def apply_final_formatting(ws: Worksheet, max_cell_length: int = 60, padding: in
                 wrapText=True, horizontal="center", vertical="center"
             )
     # Freeze first row
-    ws.freeze_panes = ws["A2"]
+    ws.freeze_panes = ws[freeze_cell]

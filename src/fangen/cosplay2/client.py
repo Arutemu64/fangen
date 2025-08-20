@@ -3,12 +3,12 @@ import logging
 from pathlib import Path
 
 from adaptix import Retort
-from requests import Session, HTTPError
+from requests import HTTPError, Session
 from requests.utils import cookiejar_from_dict, dict_from_cookiejar
 
-from fangen.cosplay2.models.topic import TopicDTO, TopicWithFieldsDTO
 from fangen.cosplay2.models.plan import PlanNodeDTO
 from fangen.cosplay2.models.request import RequestDTO
+from fangen.cosplay2.models.topic import TopicDTO, TopicWithFieldsDTO
 from fangen.cosplay2.models.value import RequestValueDTO
 
 logger = logging.getLogger(__name__)
@@ -22,12 +22,13 @@ class Cosplay2Client:
         self.base_url = f"https://{event_name}.cosplay2.ru/api/"
         self.retort = Retort(strict_coercion=False)
         self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) "
+            "Gecko/20100101 Firefox/142.0"
         }
 
     def auth(self, login: str, password: str) -> bool:
         if self._cookie_file.is_file():
-            with open(self._cookie_file, "r") as f:
+            with self._cookie_file.open("r") as f:
                 cookies_dict = json.load(f)
                 self.session.cookies = cookiejar_from_dict(cookies_dict)
             test_url = self.base_url + "events/get_settings"
@@ -46,21 +47,20 @@ class Cosplay2Client:
         )
         if login_response.ok:
             self.session.cookies = login_response.cookies
-            with open(self._cookie_file, "w") as f:
+            with self._cookie_file.open("w") as f:
                 cookies_dict = dict_from_cookiejar(self.session.cookies)
                 json.dump(cookies_dict, f)
             logger.info("Успешно вошли и обновили Cookie!")
             return True
-        else:
-            try:
-                login_response.raise_for_status()
-            except HTTPError as e:
-                msg = (
-                    f"Ошибка входа в Cosplay2 — код {e.response.status_code}. "
-                    f"Проверьте корректность данных в конфиге."
-                )
-                raise HTTPError(msg) from e
-            return False
+        try:
+            login_response.raise_for_status()
+        except HTTPError as e:
+            msg = (
+                f"Ошибка входа в Cosplay2 — код {e.response.status_code}. "
+                f"Проверьте корректность данных в конфиге."
+            )
+            raise HTTPError(msg) from e
+        return False
 
     def get_list(self) -> list[TopicDTO]:
         url = self.base_url + "topics/get_list"

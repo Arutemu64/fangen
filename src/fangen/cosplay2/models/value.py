@@ -8,4 +8,4 @@ class RequestValueDTO:
     request_id: int
     title: str
     type: ValueType
-    value: str
+    value: str | None

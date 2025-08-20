@@ -9,6 +9,7 @@ class RequestDTO:
     topic_id: int
     number: int
     status: RequestStatus
+    update_time: str
     user_id: int
     user_title: str
     voting_number: int | None

@@ -18,7 +18,7 @@ class RequestValue(Base):
     request_id: Mapped[int] = mapped_column(ForeignKey("requests.id"))
     title: Mapped[str] = mapped_column()
     type: Mapped[ValueType] = mapped_column()
-    value: Mapped[str] = mapped_column()
+    value: Mapped[str | None] = mapped_column()
 
     request: Mapped["Request"] = relationship(viewonly=True)
 
