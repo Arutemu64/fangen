@@ -1,7 +1,7 @@
 # ОСНОВНЫЕ НАСТРОЙКИ
 event_name = "fanfan2025summer"     # ID события (субдомен фестиваля)
-email = "email@fancom.info"         # Почта от Cosplay2
-password = "passw0rd"               # Пароль от Cosplay2
+api_key = "email@fancom.info"       # Ключ API
+api_secret = "passw0rd"             # Секрет API
 db_path = "./database.db"           # Путь к базе данных
 dict_path = "./dictionary.json"     # Путь к словарю
 

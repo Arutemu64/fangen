@@ -4,6 +4,7 @@ from types import SimpleNamespace
 from typing import Annotated
 
 import typer
+from requests import Session
 from rich import print
 from rich.logging import RichHandler
 
@@ -54,9 +55,13 @@ def main(
 @app.command(name="make_db", help="Загружает данные из заявок с Cosplay2")
 def make_db_command(ctx: typer.Context) -> None:
     config: Config = ctx.obj.config
-    c2 = Cosplay2Client(event_name=config.event_name)
-    if c2.auth(login=config.email, password=config.password):
-        make_db(client=c2, db_path=config.db_path)
+    client = Cosplay2Client(
+        session=Session(),
+        api_key=config.api_key,
+        api_secret=config.api_secret,
+        event_name=config.event_name,
+    )
+    make_db(client=client, db_path=config.db_path)
 
 
 @app.command(name="make_plan", help="Заполняет план данными из заявок")

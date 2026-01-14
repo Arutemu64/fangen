@@ -8,8 +8,8 @@ from adaptix import Retort
 @dataclass(slots=True, frozen=True)
 class Config:
     # General config
-    email: str
-    password: str
+    api_key: str
+    api_secret: str
     event_name: str
     db_path: Path
     dict_path: Path
