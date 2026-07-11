@@ -6,7 +6,7 @@ class Base(DeclarativeBase):
 
     @classmethod
     @declared_attr
-    def __tablename__(cls):
+    def __tablename__(cls) -> str:
         """Hooks __tablename__ attribute based on model name.
 
         You can skip specifying this attribute in models, then name for table

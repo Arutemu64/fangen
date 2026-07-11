@@ -20,7 +20,7 @@ def apply_final_formatting(
     max_cell_length: int = 60,
     padding: int = 2,
     freeze_cell: str = "A2",  # Header
-):
+) -> None:
     header_row = ws[1]
     for cell in header_row:
         cell.fill = HEADER_ROW_FILL

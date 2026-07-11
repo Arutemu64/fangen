@@ -8,7 +8,7 @@ from fangen.cosplay2.models.vo import ValueType
 from fangen.db.models.base import Base
 
 if typing.TYPE_CHECKING:
-    from fangen.db.models import Request  # noqa
+    from fangen.db.models import Request
 
 
 class RequestValue(Base):
@@ -23,7 +23,7 @@ class RequestValue(Base):
     request: Mapped["Request"] = relationship(viewonly=True)
 
     @classmethod
-    def from_dto(cls, dto: RequestValueDTO):
+    def from_dto(cls, dto: RequestValueDTO) -> "RequestValue":
         return RequestValue(
             request_id=dto.request_id,
             title=dto.title,

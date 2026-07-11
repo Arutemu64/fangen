@@ -34,7 +34,7 @@ class MoveResult:
     request_title: str | None
     value_title: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"[{self.status.upper()}] {self.filename} "
             f"| {self.value_title} > {self.request_title}"
@@ -153,6 +153,5 @@ def move_files(
             f.writelines(f"{r}\n" for r in results if r.status == status)
 
     print(
-        "🎉 Готово! Проверьте логи и разберитесь, "
-        "что произошло с файлами [NOT FOUND]."
+        "🎉 Готово! Проверьте логи и разберитесь, что произошло с файлами [NOT FOUND]."
     )

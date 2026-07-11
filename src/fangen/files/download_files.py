@@ -32,7 +32,7 @@ class DownloadResult:
     value_title: str
     link: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"[{self.status.upper()}] {self.filename} | "
             f"{self.value_title} > {self.request_title} | {self.link}"
@@ -58,7 +58,7 @@ def parse_download_link(value: RequestValue, request: Request) -> str | None:
 def download_value_file(
     value: RequestValue, request: Request, output_dir: Path, config: Config
 ) -> DownloadResult:
-    def fail_result(filename: str, link: str = "Не приложен"):
+    def fail_result(filename: str, link: str = "Не приложен") -> DownloadResult:
         return DownloadResult(
             status=DownloadStatus.FAIL,
             filename=filename,

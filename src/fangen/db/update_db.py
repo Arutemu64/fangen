@@ -10,7 +10,7 @@ from fangen.db.models import Request, RequestValue, Topic, TopicField, TopicSect
 from fangen.db.models.node import PlanNode
 
 
-def make_db(client: Cosplay2Client, db_path: Path):
+def make_db(client: Cosplay2Client, db_path: Path) -> None:
     print("🌐 Начинаем наполнение базы данных...")
     create_db(db_path=db_path)
     session = get_session(db_path=db_path)
@@ -55,7 +55,7 @@ def make_db(client: Cosplay2Client, db_path: Path):
         print("💾 Сохраняем расписание...")
         plan = client.get_plan()
 
-        def proceed_node(node: PlanNodeDTO, parent_id: str | None = None):
+        def proceed_node(node: PlanNodeDTO, parent_id: str | None = None) -> None:
             node_orm = PlanNode.from_dto(node)
             if parent_id:
                 node_orm.parent_id = parent_id

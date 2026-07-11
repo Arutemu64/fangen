@@ -58,7 +58,44 @@ docstring-code-line-length = "dynamic"
 
 [lint]
 select = ["ALL"]
-ignore = ["D", "ANN", "RUF", "N", "FBT", "PLR", "COM812", "ISC001", "TC001", "ARG001", "FIX002", "TD002", "TD003", "TD004", "RET504", "DTZ007", "DTZ006", "A004", "PGH004"]
+ignore = [
+  # Formatter conflicts. Ruff explicitly recommends disabling these when the
+  # formatter is enabled, otherwise the linter and formatter fight each other.
+  "COM812", # missing-trailing-comma
+  "ISC001", # single-line-implicit-string-concatenation
+
+  # Docstrings are not required for this small private, internal tool.
+  "D", # pydocstyle
+
+  # The codebase intentionally contains Cyrillic text in strings, docstrings
+  # and comments, so the ambiguous-unicode checks are pure noise here. Only
+  # the ambiguous-character rules are silenced; the rest of RUF stays on.
+  "RUF001", # ambiguous-unicode-character-string
+  "RUF002", # ambiguous-unicode-character-docstring
+  "RUF003", # ambiguous-unicode-character-comment
+
+  # Complexity/size thresholds are subjective and were already effectively
+  # disabled via the previous blanket "PLR" ignore. They are relaxed
+  # deliberately; the rest of PLR (e.g. PLR2004 magic values) stays on.
+  "C901",    # complex-structure
+  "PLR0911", # too-many-return-statements
+  "PLR0912", # too-many-branches
+  "PLR0913", # too-many-arguments
+
+  # TODO bookkeeping we don't enforce (authors/links). Well-formedness rules
+  # such as TD004/TD005 stay on.
+  "FIX002", # line-contains-todo
+  "TD002",  # missing-todo-author
+  "TD003",  # missing-todo-link
+
+  # `from rich import print` deliberately shadows the builtin.
+  "A004", # builtin-import-shadowing
+
+  # Naive datetimes are intentional: file mtimes and the parsed update_time
+  # are compared as local, tz-naive values.
+  "DTZ006", # call-datetime-fromtimestamp
+  "DTZ007", # call-datetime-strptime-without-zone
+]
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
 unfixable = []

@@ -46,7 +46,7 @@ def main(
             help="Путь к конфигу",
         ),
     ] = Path("./config.toml"),
-):
+) -> None:
     logging.basicConfig(
         level=logging.INFO, handlers=[RichHandler(rich_tracebacks=True)]
     )
@@ -73,7 +73,7 @@ def make_plan_command(
     filepath: Annotated[Path, typer.Argument(help="Путь к файлу Excel")] = Path(
         "./plan.xlsx"
     ),
-):
+) -> None:
     config: Config = ctx.obj.config
     session = get_session(db_path=config.db_path)
     make_plan(filepath=filepath, session=session, config=config)
@@ -85,7 +85,7 @@ def make_data_command(
     filepath: Annotated[Path, typer.Argument(help="Путь к файлу Excel")] = Path(
         "./excel.xlsx"
     ),
-):
+) -> None:
     config: Config = ctx.obj.config
     session = get_session(db_path=config.db_path)
     make_data(filepath=filepath, session=session, config=config)
@@ -97,7 +97,7 @@ def download_files_command(
     output_dir: Annotated[Path, typer.Argument(help="Путь к файлу Excel")] = Path(
         "./files"
     ),
-):
+) -> None:
     config: Config = ctx.obj.config
     session = get_session(db_path=config.db_path)
     output_dir.mkdir(exist_ok=True, parents=True)
@@ -113,7 +113,7 @@ def move_files_command(
     output_dir: Annotated[Path, typer.Argument(help="Путь к файлу Excel")] = Path(
         "./stage"
     ),
-):
+) -> None:
     config: Config = ctx.obj.config
     session = get_session(db_path=config.db_path)
     output_dir.mkdir(exist_ok=True, parents=True)

@@ -8,7 +8,7 @@ from fangen.cosplay2.models.vo import ValueType
 from fangen.db.models.base import Base
 
 if typing.TYPE_CHECKING:
-    from fangen.db.models.request import Request  # noqa
+    from fangen.db.models.request import Request
 
 
 class TopicSection(Base):
@@ -22,7 +22,7 @@ class TopicSection(Base):
     fields: Mapped[list["TopicField"]] = relationship(viewonly=True)
 
     @classmethod
-    def from_dto(cls, dto: TopicSectionDTO):
+    def from_dto(cls, dto: TopicSectionDTO) -> "TopicSection":
         return TopicSection(
             id=dto.id,
             topic_id=dto.topic_id,
@@ -41,7 +41,7 @@ class TopicField(Base):
     type: Mapped[ValueType] = mapped_column()
 
     @classmethod
-    def from_dto(cls, dto: TopicFieldDTO):
+    def from_dto(cls, dto: TopicFieldDTO) -> "TopicField":
         return TopicField(
             id=dto.id,
             section_id=dto.section_id,
@@ -72,7 +72,7 @@ class Topic(Base):
     requests: Mapped[list["Request"]] = relationship(viewonly=True)
 
     @classmethod
-    def from_dto(cls, dto: TopicDTO):
+    def from_dto(cls, dto: TopicDTO) -> "Topic":
         return Topic(
             id=dto.id,
             event_id=dto.event_id,

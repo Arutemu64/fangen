@@ -26,7 +26,7 @@ class Request(Base):
     )
 
     @classmethod
-    def from_dto(cls, dto: RequestDTO):
+    def from_dto(cls, dto: RequestDTO) -> "Request":
         return Request(
             id=dto.id,
             topic_id=dto.topic_id,
