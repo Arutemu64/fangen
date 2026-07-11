@@ -71,19 +71,13 @@ def move_value_file(
     internal_filename = f"{value.id}.*"
 
     src = find_file_by_id(input_dir, value.id)
-    if not src and value.title not in config.skip_fields:
+    if not src:
         # File not found but it was actually required
         return MoveResult(
             MoveStatus.NOT_FOUND, internal_filename, request.voting_title, value.title
         )
 
     internal_filename = src.name
-
-    # File is not required
-    if value.title in config.skip_fields:
-        return MoveResult(
-            MoveStatus.SKIP, internal_filename, request.voting_title, value.title
-        )
 
     data = parse_request(request)
     data.update(extra_data)
@@ -158,4 +152,7 @@ def move_files(
             f.write(f"\n--------[{status.name}]--------\n")
             f.writelines(f"{r}\n" for r in results if r.status == status)
 
-    print("🎉 Готово! Проверьте логи и разберитесь, что произошло с файлами [FAIL].")
+    print(
+        "🎉 Готово! Проверьте логи и разберитесь, "
+        "что произошло с файлами [NOT FOUND]."
+    )

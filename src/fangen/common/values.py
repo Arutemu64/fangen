@@ -36,8 +36,8 @@ def parse_file_value(value: RequestValue) -> FileValue:
     if file_info.get("filename"):
         return FileValue(
             filename=file_info["filename"],
-            filesize=file_info["filesize"],
-            fileext=file_info["fileext"],
+            filesize=file_info.get("filesize"),
+            fileext=file_info.get("fileext"),
         )
     return FileValue(
         link=file_info["link"],

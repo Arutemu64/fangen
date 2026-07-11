@@ -93,8 +93,8 @@ def download_value_file(
     with yt_dlp.YoutubeDL(ydl_config) as ydl:
         try:
             info = ydl.extract_info(link, download=False)
-            save_path = Path(ydl.prepare_filename(info).lower())
-            ext = save_path.suffix
+            save_path = Path(ydl.prepare_filename(info))
+            ext = save_path.suffix.lower()
             internal_filename = f"{value.id}{ext}"
         except (DownloadError, TypeError):
             return fail_result(internal_filename, link)

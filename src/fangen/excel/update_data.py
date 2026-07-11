@@ -39,8 +39,7 @@ def make_data(filepath: Path, session: Session, config: Config) -> None:
     for request in requests:
         current_row = ws[current_row_index]
         data = parse_request(request)
-        for cell in current_row:
-            header = headers[current_row.index(cell)]
+        for cell, header in zip(current_row, headers, strict=False):
             if isinstance(header, str):
                 cell.value = str(data.get(header) or "—")
             if current_row_index % 2 == 0:
@@ -64,8 +63,7 @@ def make_data(filepath: Path, session: Session, config: Config) -> None:
             current_row_index = topic.requests.index(request) + 2
             data = parse_request(request)
             current_row = ws[current_row_index]
-            for cell in current_row:
-                header = headers[current_row.index(cell)]
+            for cell, header in zip(current_row, headers, strict=False):
                 cell.value = str(data.get(header, ""))
                 if current_row_index % 2 == 0:
                     cell.fill = EVEN_ROW_FILL
