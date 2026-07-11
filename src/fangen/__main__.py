@@ -47,6 +47,9 @@ def main(
         ),
     ] = Path("./config.toml"),
 ):
+    logging.basicConfig(
+        level=logging.INFO, handlers=[RichHandler(rich_tracebacks=True)]
+    )
     print_logo()
     config = load_config(config)
     ctx.obj = SimpleNamespace(config=config)
@@ -120,7 +123,4 @@ def move_files_command(
 
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO, handlers=[RichHandler(rich_tracebacks=True)]
-    )
     app()

@@ -59,8 +59,7 @@ def make_plan(filepath: Path, session: Session, config: Config) -> None:
                 data.update({"n": f"{request_number:03}"})
                 request_number += 1
 
-            for cell in current_row:
-                header = headers[current_row.index(cell)]
+            for cell, header in zip(current_row, headers, strict=False):
                 if isinstance(header, str):
                     cell.value = format_template(header, data, dictionary)
                 if node.type is PlanNodeType.TOPIC:

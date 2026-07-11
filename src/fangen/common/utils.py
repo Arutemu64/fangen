@@ -21,7 +21,11 @@ def format_template(template: str, data: dict, dictionary: dict) -> str:
             for internal_key, possible_keys in dictionary.items():
                 if key in possible_keys:
                     key = internal_key  # noqa: PLW2901
+                    break
             value = data.get(key)
+            if value:
+                # Use the first key that resolves to a non-empty value
+                break
 
         return str(value) if value else None
 
