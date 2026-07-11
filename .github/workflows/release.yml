@@ -1,0 +1,52 @@
+name: Build Windows release
+
+# Build the Windows onedir bundle on every `v*` tag and attach the zip to the
+# matching GitHub Release. `workflow_dispatch` allows manual test builds (the
+# artifact is uploaded but no Release is published).
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies (incl. PyInstaller)
+        run: uv sync --all-groups --frozen
+
+      - name: Build exe
+        run: uv run pyinstaller fangen.spec --clean --noconfirm
+
+      - name: Stage user-facing files
+        shell: pwsh
+        run: |
+          Copy-Item config.dist.toml dist/fangen/config.toml
+          Copy-Item dictionary.json  dist/fangen/dictionary.json
+
+      - name: Create archive
+        shell: pwsh
+        run: Compress-Archive -Path dist/fangen/* -DestinationPath "fangen-${{ github.ref_name }}-windows-x64.zip"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fangen-windows-x64
+          path: fangen-*-windows-x64.zip
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: fangen-*-windows-x64.zip
