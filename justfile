@@ -18,16 +18,15 @@ install:
     uv sync --all-groups
     uv run pre-commit install
 
-# Build exe
+# Build exe (onedir) from the committed PyInstaller spec
 build-exe:
-    pyinstaller src/fangen/__main__.py -n fangen
+    uv run pyinstaller fangen.spec --clean --noconfirm
 
-# Bundle release
+# Bundle release: exe + user-facing config/dictionary, zipped
 bundle-exe: build-exe
-    cp config.dist.toml ./dist/config.toml
-    cp dictionary.json ./dist/dictionary.json
+    cp config.dist.toml ./dist/fangen/config.toml
+    cp dictionary.json ./dist/fangen/dictionary.json
     cd dist && rm -f release.zip
-    cd dist && cp -r ./fangen/. ./
-    cd dist && 7z a release.zip fangen.exe config.toml dictionary.json _internal
+    cd dist && 7z a release.zip ./fangen
 
 

@@ -32,6 +32,8 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+#  ...but the FANGEN build spec is maintained by hand and kept in version control.
+!fangen.spec
 
 # Installer logs
 pip-log.txt
