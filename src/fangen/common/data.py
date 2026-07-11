@@ -95,8 +95,8 @@ def get_node_data(node: PlanNode) -> NodeData:
     }
     if node.type is PlanNodeType.EVENT:
         data.update(parse_event_node(node))
-    if node.type is PlanNodeType.TOPIC:
+    if node.type is PlanNodeType.TOPIC and node.topic is not None:
         data.update(parse_topic(node.topic))
-    if node.type is PlanNodeType.REQUEST:
+    if node.type is PlanNodeType.REQUEST and node.request is not None:
         data.update(parse_request(node.request))
     return data

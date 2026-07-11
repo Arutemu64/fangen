@@ -51,8 +51,8 @@ def main(
         level=logging.INFO, handlers=[RichHandler(rich_tracebacks=True)]
     )
     print_logo()
-    config = load_config(config)
-    ctx.obj = SimpleNamespace(config=config)
+    loaded_config = load_config(config)
+    ctx.obj = SimpleNamespace(config=loaded_config)
 
 
 @app.command(name="make_db", help="Загружает данные из заявок с Cosplay2")

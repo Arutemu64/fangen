@@ -117,7 +117,9 @@ def move_files(
     if config.stage_mode:
         plan_nodes = get_plan_nodes(session)
         requests = [
-            node.request for node in plan_nodes if node.type is PlanNodeType.REQUEST
+            node.request
+            for node in plan_nodes
+            if node.type is PlanNodeType.REQUEST and node.request is not None
         ]
     else:
         requests = get_approved_requests(session)

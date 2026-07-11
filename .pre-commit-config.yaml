@@ -1,0 +1,39 @@
+# See https://pre-commit.com for more information.
+#
+# Run `uv run pre-commit install` once to enable the git hook; hooks then run
+# automatically on `git commit`. Run against everything with
+# `uv run pre-commit run --all-files`.
+#
+# These are `local` hooks that invoke ruff and ty through `uv run`, so the
+# exact versions pinned in `uv.lock` are used (single source of truth, no
+# drift between the hook and the project environment). This mirrors how the
+# `justfile` runs the same tools.
+repos:
+  - repo: local
+    hooks:
+      # Ruff linter (with safe autofixes).
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --fix
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      # Ruff formatter.
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      # ty static type checker. Runs on the whole project (configured via
+      # [tool.ty] in pyproject.toml) rather than only the passed files, since
+      # type checking is inherently whole-program.
+      - id: ty
+        name: ty check
+        entry: uv run ty check
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+        require_serial: true

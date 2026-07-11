@@ -35,36 +35,28 @@ class Cosplay2Client:
 
     def get_list(self) -> list[TopicDTO]:
         url = self.base_url + "topics/get_list"
-        response = self.session.get(
-            url=url, headers=self.headers, timeout=self.timeout
-        )
+        response = self.session.get(url=url, headers=self.headers, timeout=self.timeout)
         response.raise_for_status()
         data = response.json()
         return self.retort.load(data, list[TopicDTO])
 
     def get_plan(self) -> list[PlanNodeDTO]:
         url = self.base_url + "events/get_plan"
-        response = self.session.get(
-            url=url, headers=self.headers, timeout=self.timeout
-        )
+        response = self.session.get(url=url, headers=self.headers, timeout=self.timeout)
         response.raise_for_status()
         data: str = response.json()["plan"]
         return self.retort.load(json.loads(data), list[PlanNodeDTO])
 
     def get_all_requests(self) -> list[RequestDTO]:
         url = self.base_url + "topics/get_all_requests"
-        response = self.session.get(
-            url=url, headers=self.headers, timeout=self.timeout
-        )
+        response = self.session.get(url=url, headers=self.headers, timeout=self.timeout)
         response.raise_for_status()
         data = response.json()
         return self.retort.load(data, list[RequestDTO])
 
     def get_all_values(self) -> list[RequestValueDTO]:
         url = self.base_url + "requests/get_all_values"
-        response = self.session.get(
-            url=url, headers=self.headers, timeout=self.timeout
-        )
+        response = self.session.get(url=url, headers=self.headers, timeout=self.timeout)
         response.raise_for_status()
         data = response.json()
         return self.retort.load(data, list[RequestValueDTO])

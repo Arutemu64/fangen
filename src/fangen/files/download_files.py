@@ -28,7 +28,7 @@ class DownloadStatus(enum.StrEnum):
 class DownloadResult:
     status: DownloadStatus
     filename: str
-    request_title: str
+    request_title: str | None
     value_title: str
     link: str
 

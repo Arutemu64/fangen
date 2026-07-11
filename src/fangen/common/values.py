@@ -26,12 +26,16 @@ def parse_checkbox_value(value: RequestValue) -> bool:
 
 
 def parse_image_value(value: RequestValue) -> ImageValue:
+    if value.value is None:
+        raise ValueError(value.title)
     image_info = json.loads(value.value)
     filename = image_info["filename"]
     return ImageValue(filename)
 
 
 def parse_file_value(value: RequestValue) -> FileValue:
+    if value.value is None:
+        raise ValueError(value.title)
     file_info = json.loads(value.value)
     if file_info.get("filename"):
         return FileValue(
@@ -45,4 +49,6 @@ def parse_file_value(value: RequestValue) -> FileValue:
 
 
 def parse_duration_value(value: RequestValue) -> datetime.timedelta:
+    if value.value is None:
+        raise ValueError(value.title)
     return datetime.timedelta(minutes=float(value.value))

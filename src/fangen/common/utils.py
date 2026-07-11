@@ -12,7 +12,7 @@ def build_cosplay2_file_link(event_id: int, request_id: int, filename: str) -> s
 def format_template(template: str, data: dict, dictionary: dict) -> str:
     variable_pattern = r"\{(.*?)\}"
 
-    def replace_match(match: re.Match[str]) -> str | None:
+    def replace_match(match: re.Match[str]) -> str:
         keys_str = match.group(1)
         keys = keys_str.split("|")
 
@@ -27,6 +27,6 @@ def format_template(template: str, data: dict, dictionary: dict) -> str:
                 # Use the first key that resolves to a non-empty value
                 break
 
-        return str(value) if value else None
+        return str(value) if value else ""
 
     return re.sub(variable_pattern, replace_match, template)
