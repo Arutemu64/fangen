@@ -1,7 +1,7 @@
 from pathlib import Path
 
 
-def check_excel_file(filepath: Path):
+def check_excel_file(filepath: Path) -> None:
     try:
         with filepath.open("a"):
             pass

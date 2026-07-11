@@ -26,7 +26,7 @@ class PlanNode(Base):
     nodes: Mapped[list["PlanNode"]] = relationship(remote_side=[uid])
 
     @classmethod
-    def from_dto(cls, dto: PlanNodeDTO):
+    def from_dto(cls, dto: PlanNodeDTO) -> "PlanNode":
         return PlanNode(
             uid=dto.uid,
             type=dto.type,

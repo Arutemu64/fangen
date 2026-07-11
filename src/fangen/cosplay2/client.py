@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class Cosplay2Client:
     def __init__(
         self, session: Session, api_key: str, api_secret: str, event_name: str
-    ):
+    ) -> None:
         self.session = session
         self.base_url = f"https://{event_name}.cosplay2.ru/api/"
         self.headers = {
