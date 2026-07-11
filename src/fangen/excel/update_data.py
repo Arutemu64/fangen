@@ -25,7 +25,9 @@ def make_data(filepath: Path, session: Session, config: Config) -> None:
     ws.freeze_panes = "B1"
     plan_nodes = get_plan_nodes(session)
     requests = [
-        node.request for node in plan_nodes if node.type is PlanNodeType.REQUEST
+        node.request
+        for node in plan_nodes
+        if node.type is PlanNodeType.REQUEST and node.request is not None
     ]
     headers = ["info"]
     seen = set()

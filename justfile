@@ -6,12 +6,17 @@ ruff-check:
 ruff-format:
 	ruff format src/fangen --respect-gitignore
 
-# Lint (format + check)
-lint: ruff-format ruff-check
+# Type check
+typecheck:
+	ty check
 
-# Install everything
+# Lint (format + check + typecheck)
+lint: ruff-format ruff-check typecheck
+
+# Install everything (and enable the pre-commit git hook)
 install:
     uv sync --all-groups
+    uv run pre-commit install
 
 # Build exe
 build-exe:
