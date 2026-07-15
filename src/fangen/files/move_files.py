@@ -13,12 +13,14 @@ from fangen.common.data import parse_request
 from fangen.common.utils import format_template
 from fangen.config import Config
 from fangen.cosplay2.models.vo import PlanNodeType
-from fangen.db.models import Request, RequestValue
+from fangen.db.models import RequestValue
 from fangen.db.repo import get_approved_requests, get_plan_nodes
-from fangen.files.utils import FILE_VALUE_TYPES, find_file_by_id
+from fangen.files.utils import build_file_index, iter_file_values, write_log
 
 ILLEGAL_CHARS = r'[<>:"/\\|?*\x00-\x1F]'
 REPLACEMENT_CHAR = "_"
+# Path components that would escape or alias the output directory.
+UNSAFE_PARTS = {"", ".", ".."}
 
 
 class MoveStatus(enum.StrEnum):
@@ -59,52 +61,62 @@ def sanitize_data(d: dict) -> dict:
     return sanitized
 
 
+def resolve_destination(raw_path: str, output_dir: Path) -> Path:
+    """Turn a templated path into a safe destination under ``output_dir``.
+
+    Each component is sanitized, and components that would escape the tree
+    (``..``, ``.`` or empty) are dropped so the result always stays inside
+    ``output_dir``.
+    """
+    normalized = raw_path.replace("\\", "/")
+    parts = [
+        sanitized
+        for part in normalized.split("/")
+        if (sanitized := sanitize_value(part)) not in UNSAFE_PARTS
+    ]
+    return output_dir.joinpath(*parts)
+
+
 def move_value_file(
     value: RequestValue,
-    request: Request,
+    request_data: dict,
     extra_data: dict,
-    input_dir: Path,
+    src: Path | None,
     output_dir: Path,
     config: Config,
     dictionary: dict,
 ) -> MoveResult:
-    internal_filename = f"{value.id}.*"
+    request_title = request_data.get("info")
 
-    src = find_file_by_id(input_dir, value.id)
     if not src:
         # File not found but it was actually required
         return MoveResult(
-            MoveStatus.NOT_FOUND, internal_filename, request.voting_title, value.title
+            MoveStatus.NOT_FOUND, f"{value.id}.*", request_title, value.title
         )
 
     internal_filename = src.name
+    ext = src.suffix
+    if ext.lstrip(".") not in config.allowed_exts:
+        return MoveResult(
+            MoveStatus.SKIP, internal_filename, request_title, value.title
+        )
 
-    data = parse_request(request)
+    data = dict(request_data)
     data.update(extra_data)
     data["title"] = (data.get("title") or "[notitle]")[: config.max_title_length]
     data["info"] = (data.get("info") or "[noinfo]")[: config.max_title_length]
     data = sanitize_data(data)
 
-    ext = src.suffix
-    if ext.lstrip(".") not in config.allowed_exts:
-        return MoveResult(
-            MoveStatus.SKIP, internal_filename, request.voting_title, value.title
-        )
-
-    raw_path = (
-        format_template(config.filename_template, data, dictionary)
-        + f"_{value.id}{ext}"
+    raw_path = format_template(config.filename_template, data, dictionary) + (
+        f"_{value.id}{ext}"
     )
-    normalized = raw_path.replace("\\", "/")
-    parts = normalized.split("/")
-    parts = [sanitize_value(p) for p in parts]
-    dst = output_dir.joinpath(*parts)
+    dst = resolve_destination(raw_path, output_dir)
 
     if not dst.exists() and not config.dry_run:
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(src, dst)
 
-    return MoveResult(MoveStatus.OK, raw_path, request.voting_title, value.title)
+    return MoveResult(MoveStatus.OK, raw_path, request_title, value.title)
 
 
 def move_files(
@@ -124,23 +136,20 @@ def move_files(
     else:
         requests = get_approved_requests(session)
 
+    file_index = build_file_index(input_dir)
     results: list[MoveResult] = []
 
     for idx, request in enumerate(
         track(requests, description="🗃️ Проверяем и копируем файлы..."), 1
     ):
-        for value in (
-            v
-            for v in request.values
-            if v.type in FILE_VALUE_TYPES and v.title not in config.skip_fields
-        ):
+        request_data = parse_request(request)
+        for value in iter_file_values(request, config):
             extra_data = {"n": f"{idx:03}", "value_title": value.title}
-            value: RequestValue
             result = move_value_file(
                 value,
-                request,
+                request_data,
                 extra_data,
-                input_dir,
+                file_index.get(value.id),
                 output_dir,
                 config,
                 dictionary,
@@ -148,11 +157,11 @@ def move_files(
             print(str(result))
             results.append(result)
 
-    log_file = output_dir / "log.txt"
-    with log_file.open("w", encoding="utf-8") as f:
-        for status in [MoveStatus.NOT_FOUND, MoveStatus.SKIP, MoveStatus.OK]:
-            f.write(f"\n--------[{status.name}]--------\n")
-            f.writelines(f"{r}\n" for r in results if r.status == status)
+    write_log(
+        output_dir / "log.txt",
+        [(r.status, str(r)) for r in results],
+        [MoveStatus.NOT_FOUND, MoveStatus.SKIP, MoveStatus.OK],
+    )
 
     print(
         "🎉 Готово! Проверьте логи и разберитесь, что произошло с файлами [NOT FOUND]."
