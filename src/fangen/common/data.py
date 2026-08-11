@@ -1,4 +1,5 @@
 import datetime
+from typing import TYPE_CHECKING
 
 from fangen.common.utils import build_cosplay2_file_link, build_cosplay2_image_link
 from fangen.common.values import (
@@ -8,8 +9,10 @@ from fangen.common.values import (
     parse_image_value,
 )
 from fangen.cosplay2.models.vo import PlanNodeType, ValueType
-from fangen.db.models import Request, RequestValue, Topic
-from fangen.db.models.node import PlanNode
+
+if TYPE_CHECKING:
+    from fangen.db.models import Request, RequestValue, Topic
+    from fangen.db.models.node import PlanNode
 
 NodeData = dict[str, str | int | list | None]
 

@@ -1,16 +1,21 @@
 import re
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from openpyxl import Workbook
 from rich import print
-from sqlalchemy.orm import Session
 
 from fangen.common.data import parse_request
-from fangen.config import Config
 from fangen.cosplay2.models.vo import PlanNodeType
 from fangen.db.repo import get_plan_nodes, get_topics_with_approved_requests
 from fangen.excel.formatting import EVEN_ROW_FILL, apply_final_formatting
 from fangen.excel.utils import check_excel_file
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from sqlalchemy.orm import Session
+
+    from fangen.config import Config
 
 
 def make_data(filepath: Path, session: Session, config: Config) -> None:

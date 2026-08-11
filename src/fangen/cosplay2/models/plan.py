@@ -1,6 +1,8 @@
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-from fangen.cosplay2.models.vo import PlanNodeType
+if TYPE_CHECKING:
+    from fangen.cosplay2.models.vo import PlanNodeType
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -16,4 +18,4 @@ class PlanNodeDTO:
     request_id: int | None = None
     topic_id: int | None = None
 
-    nodes: list["PlanNodeDTO"] | None = None
+    nodes: list[PlanNodeDTO] | None = None

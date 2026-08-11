@@ -1,8 +1,10 @@
 import datetime
 import json
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-from fangen.db.models import RequestValue
+if TYPE_CHECKING:
+    from fangen.db.models import RequestValue
 
 
 @dataclass(frozen=True, slots=True)

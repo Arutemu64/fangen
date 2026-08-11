@@ -3,11 +3,13 @@ import typing
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from fangen.cosplay2.models.topic import TopicDTO, TopicFieldDTO, TopicSectionDTO
-from fangen.cosplay2.models.vo import ValueType
+# mapped_column() de-stringifies this annotation via eval() at class-body
+# time, so it must be a real (non-TYPE_CHECKING) import.
+from fangen.cosplay2.models.vo import ValueType  # noqa: TC001
 from fangen.db.models.base import Base
 
 if typing.TYPE_CHECKING:
+    from fangen.cosplay2.models.topic import TopicDTO, TopicFieldDTO, TopicSectionDTO
     from fangen.db.models.request import Request
 
 
@@ -19,10 +21,10 @@ class TopicSection(Base):
     title: Mapped[str] = mapped_column()
     order: Mapped[int] = mapped_column()
 
-    fields: Mapped[list["TopicField"]] = relationship(viewonly=True)
+    fields: Mapped[list[TopicField]] = relationship(viewonly=True)
 
     @classmethod
-    def from_dto(cls, dto: TopicSectionDTO) -> "TopicSection":
+    def from_dto(cls, dto: TopicSectionDTO) -> TopicSection:
         return TopicSection(
             id=dto.id,
             topic_id=dto.topic_id,
@@ -41,7 +43,7 @@ class TopicField(Base):
     type: Mapped[ValueType] = mapped_column()
 
     @classmethod
-    def from_dto(cls, dto: TopicFieldDTO) -> "TopicField":
+    def from_dto(cls, dto: TopicFieldDTO) -> TopicField:
         return TopicField(
             id=dto.id,
             section_id=dto.section_id,
@@ -69,10 +71,10 @@ class Topic(Base):
         viewonly=True,
         secondary="topic_sections",
     )
-    requests: Mapped[list["Request"]] = relationship(viewonly=True)
+    requests: Mapped[list[Request]] = relationship(viewonly=True)
 
     @classmethod
-    def from_dto(cls, dto: TopicDTO) -> "Topic":
+    def from_dto(cls, dto: TopicDTO) -> Topic:
         return Topic(
             id=dto.id,
             event_id=dto.event_id,

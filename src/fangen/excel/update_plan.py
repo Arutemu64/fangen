@@ -1,14 +1,12 @@
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from openpyxl import Workbook, load_workbook
 from rich import print
 from rich.progress import track
-from sqlalchemy.orm import Session
 
 from fangen.common.data import get_node_data
 from fangen.common.utils import format_template
-from fangen.config import Config
 from fangen.cosplay2.models.vo import PlanNodeType
 from fangen.db.repo import get_plan_nodes
 from fangen.excel.formatting import (
@@ -17,6 +15,13 @@ from fangen.excel.formatting import (
     apply_final_formatting,
 )
 from fangen.excel.utils import check_excel_file
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from sqlalchemy.orm import Session
+
+    from fangen.config import Config
 
 ALLOWED_PLAN_NODE_TYPES = [PlanNodeType.EVENT, PlanNodeType.TOPIC, PlanNodeType.REQUEST]
 

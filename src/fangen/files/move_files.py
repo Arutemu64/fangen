@@ -3,19 +3,24 @@ import json
 import re
 import shutil
 from dataclasses import dataclass
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from rich import print
 from rich.progress import track
-from sqlalchemy.orm import Session
 
 from fangen.common.data import parse_request
 from fangen.common.utils import format_template
-from fangen.config import Config
 from fangen.cosplay2.models.vo import PlanNodeType
-from fangen.db.models import RequestValue
 from fangen.db.repo import get_approved_requests, get_plan_nodes
 from fangen.files.utils import build_file_index, iter_file_values, write_log
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from sqlalchemy.orm import Session
+
+    from fangen.config import Config
+    from fangen.db.models import RequestValue
 
 ILLEGAL_CHARS = r'[<>:"/\\|?*\x00-\x1F]'
 REPLACEMENT_CHAR = "_"
@@ -82,6 +87,7 @@ def move_value_file(
     request_data: dict,
     extra_data: dict,
     src: Path | None,
+    *,
     output_dir: Path,
     config: Config,
     dictionary: dict,
@@ -150,9 +156,9 @@ def move_files(
                 request_data,
                 extra_data,
                 file_index.get(value.id),
-                output_dir,
-                config,
-                dictionary,
+                output_dir=output_dir,
+                config=config,
+                dictionary=dictionary,
             )
             print(str(result))
             results.append(result)

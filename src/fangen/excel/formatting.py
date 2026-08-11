@@ -1,6 +1,10 @@
+from typing import TYPE_CHECKING
+
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
-from openpyxl.worksheet.worksheet import Worksheet
+
+if TYPE_CHECKING:
+    from openpyxl.worksheet.worksheet import Worksheet
 
 # Header styles
 HEADER_ROW_FILL = PatternFill(

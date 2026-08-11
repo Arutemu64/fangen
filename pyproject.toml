@@ -2,32 +2,36 @@
 name = "fangen"
 version = "0.1.0"
 description = "Cosplay2Excel parser"
+license = "MIT"
 classifiers = ["Private :: Do Not Upload"]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
-    "adaptix>=3.0.0b9",
+    "adaptix>=3.0.0b12",
     "openpyxl>=3.1.5",
-    "requests>=2.32.3",
-    "sqlalchemy>=2.0.37",
-    "typer>=0.15.1",
-    "yt-dlp>=2025.8.11",
+    "requests>=2.34.2",
+    "sqlalchemy>=2.0.51",
+    "typer>=0.27.1",
+    "yt-dlp>=2026.7.4",
 ]
 
 [project.scripts]
 fangen = "fangen.__main__:app"
 
 [build-system]
-requires = ["uv_build"]
+requires = ["uv_build>=0.8.17,<0.9.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
-    "pre-commit>=4.6.0",
-    "pyinstaller>=6.14.2",
-    "ruff>=0.9.3",
-    "ty>=0.0.58",
+    "pre-commit>=4.6.2",
+    "pyinstaller>=6.22.0",
+    "ruff>=0.16.2",
+    "ty>=0.0.70",
 ]
+
+[tool.uv]
+required-version = ">=0.8.17,<0.9.0"
 
 [tool.ty.environment]
 # Type-check against the Python version the project targets (see

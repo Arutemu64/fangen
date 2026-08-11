@@ -3,11 +3,13 @@ import typing
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from fangen.cosplay2.models.value import RequestValueDTO
-from fangen.cosplay2.models.vo import ValueType
+# mapped_column() de-stringifies this annotation via eval() at class-body
+# time, so it must be a real (non-TYPE_CHECKING) import.
+from fangen.cosplay2.models.vo import ValueType  # noqa: TC001
 from fangen.db.models.base import Base
 
 if typing.TYPE_CHECKING:
+    from fangen.cosplay2.models.value import RequestValueDTO
     from fangen.db.models import Request
 
 
@@ -20,10 +22,10 @@ class RequestValue(Base):
     type: Mapped[ValueType] = mapped_column()
     value: Mapped[str | None] = mapped_column()
 
-    request: Mapped["Request"] = relationship(viewonly=True)
+    request: Mapped[Request] = relationship(viewonly=True)
 
     @classmethod
-    def from_dto(cls, dto: RequestValueDTO) -> "RequestValue":
+    def from_dto(cls, dto: RequestValueDTO) -> RequestValue:
         return RequestValue(
             request_id=dto.request_id,
             title=dto.title,

@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
@@ -6,6 +6,9 @@ from sqlalchemy.orm import Session, joinedload
 from fangen.cosplay2.models.vo import RequestStatus
 from fangen.db.models import Request, Topic
 from fangen.db.models.node import PlanNode
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 def get_plan_nodes(session: Session) -> Sequence[PlanNode]:
