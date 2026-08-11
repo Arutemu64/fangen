@@ -17,14 +17,3 @@ lint: ruff-format ruff-check typecheck
 install:
     uv sync --all-groups
     uv run pre-commit install
-
-# Build exe (onedir) from the committed PyInstaller spec
-build-exe:
-    uv run pyinstaller fangen.spec --clean --noconfirm
-
-# Bundle release: exe + user-facing config/dictionary, zipped
-bundle-exe: build-exe
-    cp config.dist.toml ./dist/fangen/config.toml
-    cp dictionary.json ./dist/fangen/dictionary.json
-    cd dist && rm -f release.zip
-    cd dist && 7z a release.zip ./fangen
