@@ -1,11 +1,13 @@
 import tomllib
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 from adaptix import Retort
 
-if TYPE_CHECKING:
-    from pathlib import Path
+# NOTE: `Path` must be imported at runtime, not under `TYPE_CHECKING`. adaptix
+# resolves the `Config` annotations at runtime via `get_type_hints` when
+# building the loader, so every annotated type has to be a real name in this
+# module's namespace.
 
 
 @dataclass(slots=True, frozen=True)

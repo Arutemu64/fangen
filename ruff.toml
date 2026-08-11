@@ -104,3 +104,10 @@ fixable = ["ALL"]
 unfixable = []
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[lint.flake8-type-checking]
+# adaptix reads `@dataclass` annotations at runtime (via `get_type_hints`) to
+# build its loaders, so imports used only in dataclass annotations must stay at
+# runtime scope. Without this, the TC00x rules would move them into a
+# `TYPE_CHECKING` block and break config loading at runtime.
+runtime-evaluated-decorators = ["dataclasses.dataclass"]
