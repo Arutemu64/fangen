@@ -2,7 +2,7 @@ import re
 
 # Separator used when a single field holds several values. Rendering them as a
 # joined string keeps cells readable instead of leaking Python's list repr
-# (e.g. "['a', 'b']") into Excel/CSV output and filled templates.
+# (e.g. "['a', 'b']") into Excel output and filled templates.
 MULTI_VALUE_SEPARATOR = "; "
 
 

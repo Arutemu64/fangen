@@ -1,4 +1,3 @@
-import csv
 import re
 from typing import TYPE_CHECKING
 
@@ -22,8 +21,7 @@ if TYPE_CHECKING:
     from fangen.db.models import Request
 
 # Placeholder for empty cells in the Excel export. A visible dash reads better
-# for humans than a blank cell. The CSV export deliberately uses a truly empty
-# field instead (see make_data_csv), so tools like pandas parse it as NULL.
+# for humans than a blank cell.
 EXCEL_EMPTY = "—"
 
 
@@ -31,7 +29,7 @@ def render_value(value: object, empty: str = "") -> str:
     """Render a parsed request value as a single cell string.
 
     Multiple values are joined with MULTI_VALUE_SEPARATOR; missing or empty
-    values become ``empty`` (a visible dash in Excel, a blank field in CSV).
+    values become ``empty`` (a visible dash in Excel).
     """
     if isinstance(value, list):
         parts = [str(item) for item in value if item is not None and str(item) != ""]
@@ -46,8 +44,7 @@ def collect_summary(
 ) -> tuple[list[str], Sequence[Request]]:
     """Return the flat summary layout: the union of all field titles across
     approved requests (prefixed with the ``info`` label column) and the
-    requests themselves. Shared by the Excel summary sheet and the CSV export
-    so both stay in sync.
+    requests themselves.
     """
     plan_nodes = get_plan_nodes(session)
     requests = [
@@ -114,29 +111,4 @@ def make_data(filepath: Path, session: Session, config: Config) -> None:
         apply_final_formatting(ws, max_cell_length=config.max_cell_length)
 
     wb.save(filepath)
-    print(f"💾 Файл сохранен по пути {filepath.absolute()}")
-
-
-def make_data_csv(filepath: Path, session: Session) -> None:
-    """Export the flat summary as a single CSV table for downstream AI/LLM use.
-
-    Unlike the Excel workbook (which is styled for humans and split across
-    per-topic sheets), this is one plain table: the union of every field, empty
-    cells left blank, and multiple values joined into one string. That is the
-    representation LLM tooling handles most reliably — a single table loads
-    cleanly into pandas/DuckDB, and blank fields read as NULL rather than a
-    literal dash. See update_data.py's module docstring notes for the rationale.
-    """
-    if filepath.exists():
-        check_excel_file(filepath)
-    print("💻 Экспортируем данные в CSV...")
-    headers, requests = collect_summary(session)
-    # utf-8-sig writes a BOM so Excel also opens the Cyrillic CSV correctly;
-    # newline="" lets the csv module manage line endings and quoting.
-    with filepath.open("w", encoding="utf-8-sig", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(headers)
-        for request in requests:
-            data = parse_request(request)
-            writer.writerow([render_value(data.get(header)) for header in headers])
     print(f"💾 Файл сохранен по пути {filepath.absolute()}")
