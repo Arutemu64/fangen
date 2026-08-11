@@ -95,10 +95,10 @@ def make_data_command(
 ) -> None:
     config: Config = ctx.obj.config
     if filepath is None:
-        # Экспорт — это снимок данных на момент запуска, поэтому по умолчанию
-        # добавляем в имя метку даты и времени в формате ISO 8601 (без ":",
-        # который недопустим в именах файлов Windows). Так снимки не затирают
-        # друг друга и сортируются по имени в хронологическом порядке.
+        # The export is a point-in-time snapshot, so by default we stamp the
+        # filename with an ISO 8601 date and time (omitting ":", which is
+        # invalid in Windows filenames). This keeps snapshots from overwriting
+        # each other and sorts them chronologically by name.
         timestamp = datetime.now().astimezone().strftime("%Y-%m-%dT%H%M")
         filepath = Path(f"./data_{timestamp}.xlsx")
     session = get_session(db_path=config.db_path)

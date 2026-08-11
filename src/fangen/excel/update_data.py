@@ -23,7 +23,7 @@ def make_data(filepath: Path, session: Session, config: Config) -> None:
         check_excel_file(filepath)
     wb = Workbook()
 
-    # Лист с общими данными
+    # Summary sheet with combined data
     print("💻 Заполняем сводный лист...")
     ws = wb.active
     ws.title = "Сводный"
@@ -55,7 +55,7 @@ def make_data(filepath: Path, session: Session, config: Config) -> None:
     print("🧹 Наводим красоту...")
     apply_final_formatting(ws, max_cell_length=config.max_cell_length, freeze_cell="B2")
 
-    # Листы под каждый раздел
+    # One sheet per topic
     print("💻 Заполняем листы разделов...")
     topics = get_topics_with_approved_requests(session)
     for topic in topics:
