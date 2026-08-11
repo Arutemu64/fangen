@@ -24,11 +24,7 @@ class Config:
     skip_fields: set[str]
     dry_run: bool
 
-    # Downloader
-    files_folder: Path
-
     # Mover
-    move_folder: Path
     stage_mode: bool
     allowed_exts: set[str]
     filename_template: str

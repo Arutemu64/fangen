@@ -28,3 +28,11 @@ the tool's users are Russian-speaking.
 - Target Python version is 3.14 (see `.python-version` / `pyproject.toml`).
 
 Run `ruff check` and `ty check` before committing.
+
+## Documentation
+
+- **Keep `README.md` in sync with the code.** Whenever you change the CLI
+  (commands, arguments, options), the config schema (`Config` /
+  `config.dist.toml`), or user-facing behavior, update the matching section
+  of the README in the same change. The README's usage guide is written in
+  Russian (see the language conventions above); keep it that way.

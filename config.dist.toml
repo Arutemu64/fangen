@@ -26,12 +26,6 @@ allowed_exts = [
     "aac",
 ]
 
-# Папка для скачивания файлов
-files_folder = "./files"
-
-# Папка для отсортированных файлов
-move_folder = "./stage"
-
 # Настройки имен файлов
 max_title_length = 80
 filename_template = "{n} [{Начало выступления}] {title} №{card} {value_title}"
