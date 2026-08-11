@@ -31,8 +31,8 @@ exclude = [
 # Same as Black.
 line-length = 88
 indent-width = 4
-# Assume Python 3.13
-target-version = "py313"
+# Assume Python 3.14
+target-version = "py314"
 
 [format]
 # Like Black, use double quotes for strings.
