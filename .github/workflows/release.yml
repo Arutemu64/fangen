@@ -16,10 +16,10 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
 
@@ -40,13 +40,13 @@ jobs:
         run: Compress-Archive -Path dist/fangen/* -DestinationPath "fangen-${{ github.ref_name }}-windows-x64.zip"
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: fangen-windows-x64
           path: fangen-*-windows-x64.zip
 
       - name: Publish release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: fangen-*-windows-x64.zip
