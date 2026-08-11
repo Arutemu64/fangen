@@ -1,9 +1,9 @@
 # ОСНОВНЫЕ НАСТРОЙКИ
-event_name = "fanfan2025summer"     # ID события (субдомен фестиваля)
-api_key = "email@fancom.info"       # Ключ API
-api_secret = "passw0rd"             # Секрет API
-db_path = "./database.db"           # Путь к базе данных
-dict_path = "./dictionary.json"     # Путь к словарю
+event_name = "fanfan2025summer" # ID события (субдомен фестиваля)
+api_key = "email@fancom.info"   # Ключ API
+api_secret = "passw0rd"         # Секрет API
+db_path = "./database.db"       # Путь к базе данных
+dict_path = "./dictionary.json" # Путь к словарю
 
 # НАСТРОЙКИ ЗАПОЛНЕНИЯ EXCEL-ФАЙЛОВ
 max_cell_length = 50
@@ -12,8 +12,19 @@ max_cell_length = 50
 dry_run = false
 skip_fields = ["Видео или аудио репетиции", "Световой сценарий"]
 
-allowed_exts = ["avi", "mp4", "mov", "wmv", "mkv",
-    "mp3", "wav", "flac", "ogg", "m4a", "aac"]
+allowed_exts = [
+    "avi",
+    "mp4",
+    "mov",
+    "wmv",
+    "mkv",
+    "mp3",
+    "wav",
+    "flac",
+    "ogg",
+    "m4a",
+    "aac",
+]
 
 # Папка для скачивания файлов
 files_folder = "./files"

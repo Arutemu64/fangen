@@ -1,0 +1,11 @@
+{
+  // Recommended extensions for working on fangen. VS Code will prompt to
+  // install these when the workspace is opened.
+  "recommendations": [
+    "charliermarsh.ruff",
+    "ms-python.python",
+    "tamasfe.even-better-toml",
+    "redhat.vscode-yaml",
+    "editorconfig.editorconfig"
+  ]
+}

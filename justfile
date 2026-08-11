@@ -28,5 +28,3 @@ bundle-exe: build-exe
     cp dictionary.json ./dist/fangen/dictionary.json
     cd dist && rm -f release.zip
     cd dist && 7z a release.zip ./fangen
-
-
