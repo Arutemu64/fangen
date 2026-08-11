@@ -77,7 +77,7 @@ def make_plan_command(
 ) -> None:
     config: Config = ctx.obj.config
     session = get_session(db_path=config.db_path)
-    make_plan(filepath=filepath, session=session, config=config)
+    make_plan(filepath=filepath, session=session)
 
 
 @app.command(name="make_data", help="Экспортирует данные заявок в Excel-файл")

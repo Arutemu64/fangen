@@ -1,4 +1,3 @@
-import json
 from typing import TYPE_CHECKING
 
 from openpyxl import Workbook, load_workbook
@@ -21,12 +20,10 @@ if TYPE_CHECKING:
 
     from sqlalchemy.orm import Session
 
-    from fangen.config import Config
-
 ALLOWED_PLAN_NODE_TYPES = [PlanNodeType.EVENT, PlanNodeType.TOPIC, PlanNodeType.REQUEST]
 
 
-def make_plan(filepath: Path, session: Session, config: Config) -> None:
+def make_plan(filepath: Path, session: Session) -> None:
     if filepath.exists():
         check_excel_file(filepath)
         wb = load_workbook(filepath)
@@ -36,14 +33,11 @@ def make_plan(filepath: Path, session: Session, config: Config) -> None:
         wb = Workbook()
         ws = wb.active
         ws.title = "Лист1"
-        basic_headers = ["{Инфо}"]
+        basic_headers = ["{info}"]
         ws.append(basic_headers)
 
     print("💻 Загружаем расписание и данные...")
     plan_nodes = get_plan_nodes(session)
-
-    with config.dict_path.open(encoding="utf-8") as f:
-        dictionary = json.load(f)
 
     for sheet in wb.worksheets:
         print(f"""📄 Обрабатываем лист '{sheet.title}'...""")
@@ -66,7 +60,7 @@ def make_plan(filepath: Path, session: Session, config: Config) -> None:
 
             for cell, header in zip(current_row, headers, strict=False):
                 if isinstance(header, str):
-                    cell.value = format_template(header, data, dictionary)
+                    cell.value = format_template(header, data)
                 if node.type is PlanNodeType.TOPIC:
                     cell.font = TOPIC_ROW_FONT
                 if current_row_index % 2 == 0:

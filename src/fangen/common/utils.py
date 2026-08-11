@@ -9,19 +9,14 @@ def build_cosplay2_file_link(event_id: int, request_id: int, filename: str) -> s
     return f"https://cosplay2.ru/uploads/{event_id}/{request_id}/{filename}"
 
 
-def format_template(template: str, data: dict, dictionary: dict) -> str:
+def format_template(template: str, data: dict) -> str:
     variable_pattern = r"\{(.*?)\}"
 
     def replace_match(match: re.Match[str]) -> str:
-        keys_str = match.group(1)
-        keys = keys_str.split("|")
+        keys = match.group(1).split("|")
 
         value = None
         for key in keys:
-            for internal_key, possible_keys in dictionary.items():
-                if key in possible_keys:
-                    key = internal_key  # noqa: PLW2901
-                    break
             value = data.get(key)
             if value:
                 # Use the first key that resolves to a non-empty value

@@ -17,7 +17,6 @@ class Config:
     api_secret: str
     event_name: str
     db_path: Path
-    dict_path: Path
 
     # Excel
     max_cell_length: int
