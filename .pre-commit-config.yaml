@@ -24,16 +24,15 @@ repos:
       - id: mixed-line-ending
         args: [--fix=lf]
 
-  # TOML formatter/linter (config.dist.toml, pyproject.toml, ruff.toml, ...).
-  # Rules are configured in .taplo.toml.
+  # TOML formatter (config.dist.toml, pyproject.toml, ruff.toml, ...).
+  # Style rules are configured in .taplo.toml. Syntax validation is already
+  # covered by check-toml above, so only the formatter is enabled here (the
+  # taplo linter's real value is schemastore validation, which needs network
+  # access and adds little for this project's small, schema-less TOML files).
   - repo: https://github.com/ComPWA/taplo-pre-commit
     rev: v0.9.3
     hooks:
       - id: taplo-format
-      - id: taplo-lint
-        # Skip the online schemastore.org catalog lookup: it needs network
-        # access and isn't useful for this project's TOML files anyway.
-        args: [--no-schema]
 
   - repo: local
     hooks:
