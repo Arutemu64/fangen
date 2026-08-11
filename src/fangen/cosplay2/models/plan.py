@@ -1,8 +1,6 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from fangen.cosplay2.models.vo import PlanNodeType
+from fangen.cosplay2.models.vo import PlanNodeType
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)

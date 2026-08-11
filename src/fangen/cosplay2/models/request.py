@@ -1,8 +1,6 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from fangen.cosplay2.models.vo import RequestStatus
+from fangen.cosplay2.models.vo import RequestStatus
 
 
 @dataclass(slots=True, frozen=True)

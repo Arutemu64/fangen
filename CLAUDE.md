@@ -28,3 +28,21 @@ the tool's users are Russian-speaking.
 - Target Python version is 3.14 (see `.python-version` / `pyproject.toml`).
 
 Run `ruff check` and `ty check` before committing.
+
+### adaptix and runtime annotations
+
+adaptix builds its loaders by reading dataclass annotations at runtime (via
+`get_type_hints`). Any type used in the annotations of an adaptix-loaded
+`@dataclass` must therefore be importable at runtime — **never** hide such an
+import behind `if TYPE_CHECKING:`, or config/model loading raises `NameError`.
+Ruff enforces this: `runtime-evaluated-decorators = ["dataclasses.dataclass"]`
+in `ruff.toml` makes the `TC` rules treat dataclass annotations as runtime
+usage.
+
+## Documentation
+
+- **Keep `README.md` in sync with the code.** Whenever you change the CLI
+  (commands, arguments, options), the config schema (`Config` /
+  `config.dist.toml`), or user-facing behavior, update the matching section
+  of the README in the same change. The README's usage guide is written in
+  Russian (see the language conventions above); keep it that way.
