@@ -1,5 +1,4 @@
 import enum
-import json
 import re
 import shutil
 from dataclasses import dataclass
@@ -90,7 +89,6 @@ def move_value_file(
     *,
     output_dir: Path,
     config: Config,
-    dictionary: dict,
 ) -> MoveResult:
     request_title = request_data.get("info")
 
@@ -113,9 +111,7 @@ def move_value_file(
     data["info"] = (data.get("info") or "[noinfo]")[: config.max_title_length]
     data = sanitize_data(data)
 
-    raw_path = format_template(config.filename_template, data, dictionary) + (
-        f"_{value.id}{ext}"
-    )
+    raw_path = format_template(config.filename_template, data) + f"_{value.id}{ext}"
     dst = resolve_destination(raw_path, output_dir)
 
     if not dst.exists() and not config.dry_run:
@@ -128,9 +124,6 @@ def move_value_file(
 def move_files(
     input_dir: Path, output_dir: Path, session: Session, config: Config
 ) -> None:
-    with config.dict_path.open(encoding="utf-8") as f:
-        dictionary = json.load(f)
-
     print("💻 Загружаем расписание и данные...")
     if config.stage_mode:
         plan_nodes = get_plan_nodes(session)
@@ -158,7 +151,6 @@ def move_files(
                 file_index.get(value.id),
                 output_dir=output_dir,
                 config=config,
-                dictionary=dictionary,
             )
             print(str(result))
             results.append(result)
