@@ -6,6 +6,7 @@ from openpyxl import Workbook
 from rich import print
 
 from fangen.common.data import parse_request
+from fangen.common.utils import MULTI_VALUE_SEPARATOR
 from fangen.cosplay2.models.vo import PlanNodeType
 from fangen.db.repo import get_plan_nodes, get_topics_with_approved_requests
 from fangen.excel.formatting import EVEN_ROW_FILL, apply_final_formatting
@@ -19,11 +20,6 @@ if TYPE_CHECKING:
 
     from fangen.config import Config
     from fangen.db.models import Request
-
-# Separator used when a single field holds several values. Rendering them as a
-# joined string keeps both Excel and CSV readable instead of leaking Python's
-# list repr (e.g. "['a', 'b']") into cells.
-MULTI_VALUE_SEPARATOR = "; "
 
 # Placeholder for empty cells in the Excel export. A visible dash reads better
 # for humans than a blank cell. The CSV export deliberately uses a truly empty
