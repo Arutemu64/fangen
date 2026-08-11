@@ -13,7 +13,7 @@ from fangen.config import Config, load_config
 from fangen.cosplay2.client import Cosplay2Client
 from fangen.db.factory import get_session
 from fangen.db.update_db import make_db
-from fangen.excel.update_data import make_data
+from fangen.excel.update_data import make_data, make_data_csv
 from fangen.excel.update_plan import make_plan
 from fangen.files.download_files import download_files
 from fangen.files.move_files import move_files
@@ -92,6 +92,17 @@ def make_data_command(
             )
         ),
     ] = None,
+    csv_export: Annotated[  # noqa: FBT002
+        bool,
+        typer.Option(
+            "--csv",
+            help=(
+                "Дополнительно выгрузить плоскую CSV-таблицу рядом с Excel-файлом "
+                "(тот же путь с расширением .csv). Такой формат удобнее для "
+                "последующих запросов и отчётов через ИИ."
+            ),
+        ),
+    ] = False,
 ) -> None:
     config: Config = ctx.obj.config
     if filepath is None:
@@ -103,6 +114,8 @@ def make_data_command(
         filepath = Path(f"./data_{timestamp}.xlsx")
     session = get_session(db_path=config.db_path)
     make_data(filepath=filepath, session=session, config=config)
+    if csv_export:
+        make_data_csv(filepath=filepath.with_suffix(".csv"), session=session)
 
 
 @app.command(name="download_files", help="Скачивает файлы заявок")
