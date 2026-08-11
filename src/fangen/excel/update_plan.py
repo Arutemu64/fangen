@@ -70,7 +70,10 @@ def make_plan(filepath: Path, session: Session) -> None:
 
     print("🧹 Наводим красоту...")
     for sheet in wb.worksheets:
-        apply_final_formatting(sheet)
+        # The plan mixes event/topic/request rows, so its topic rows act as
+        # section separators rather than a flat table; filtering would hide
+        # them, so no auto-filter here.
+        apply_final_formatting(sheet, auto_filter=False)
 
     wb.save(filepath)
     print(f"💾 Файл сохранен по пути {filepath.absolute()}")

@@ -23,7 +23,10 @@ def apply_final_formatting(
     ws: Worksheet,
     max_cell_length: int = 60,
     padding: int = 2,
+    min_cell_length: int = 8,
     freeze_cell: str = "A2",  # Header
+    *,
+    auto_filter: bool = True,
 ) -> None:
     header_row = ws[1]
     for cell in header_row:
@@ -35,17 +38,30 @@ def apply_final_formatting(
             if cell.value:
                 max_length = max(max_length, len(str(cell.value)))
         column_letter = get_column_letter(col_idx)
+        # Clamp the fitted width between a minimum (so short columns stay
+        # comfortably readable and their header/filter arrow are not cramped)
+        # and a maximum (so long free-text values wrap instead of stretching
+        # the column off-screen).
         final_length = max_length + padding
-        if final_length < max_cell_length:
-            ws.column_dimensions[column_letter].width = final_length
-        else:
-            ws.column_dimensions[column_letter].width = max_cell_length
+        final_length = max(min_cell_length, min(final_length, max_cell_length))
+        ws.column_dimensions[column_letter].width = final_length
     for row in ws.iter_rows():
         # Auto-height (updates height on Excel launch)
         ws.row_dimensions[row[0].row].height = None
+        is_header = row[0].row == 1
         for cell in row:
+            # Center the header for emphasis; left-align body cells because
+            # long, wrapped Russian text is easier to read flush-left than
+            # centered. Keep everything vertically centered within the row.
             cell.alignment = Alignment(
-                wrapText=True, horizontal="center", vertical="center"
+                wrapText=True,
+                horizontal="center" if is_header else "left",
+                vertical="center",
             )
+    # Add filter dropdowns on the header row so users can sort and filter
+    # columns directly. Skipped for sheets whose rows are not a flat table
+    # (e.g. the plan, where topic rows act as section separators).
+    if auto_filter:
+        ws.auto_filter.ref = ws.dimensions
     # Freeze first row
     ws.freeze_panes = ws[freeze_cell]
