@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Annotated
@@ -82,11 +83,24 @@ def make_plan_command(
 @app.command(name="make_data", help="Экспортирует данные заявок в Excel-файл")
 def make_data_command(
     ctx: typer.Context,
-    filepath: Annotated[Path, typer.Argument(help="Путь к файлу Excel")] = Path(
-        "./excel.xlsx"
-    ),
+    filepath: Annotated[
+        Path | None,
+        typer.Argument(
+            help=(
+                "Путь к файлу Excel. По умолчанию — снимок данных с меткой "
+                "даты и времени, например ./data_2026-08-11T1430.xlsx"
+            )
+        ),
+    ] = None,
 ) -> None:
     config: Config = ctx.obj.config
+    if filepath is None:
+        # The export is a point-in-time snapshot, so by default we stamp the
+        # filename with an ISO 8601 date and time (omitting ":", which is
+        # invalid in Windows filenames). This keeps snapshots from overwriting
+        # each other and sorts them chronologically by name.
+        timestamp = datetime.now().astimezone().strftime("%Y-%m-%dT%H%M")
+        filepath = Path(f"./data_{timestamp}.xlsx")
     session = get_session(db_path=config.db_path)
     make_data(filepath=filepath, session=session, config=config)
 
