@@ -1,11 +1,15 @@
 import os
-from collections.abc import Iterable, Iterator, Sequence
-from enum import StrEnum
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-from fangen.config import Config
 from fangen.cosplay2.models.vo import ValueType
-from fangen.db.models import Request, RequestValue
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Iterator, Sequence
+    from enum import StrEnum
+
+    from fangen.config import Config
+    from fangen.db.models import Request, RequestValue
 
 FILE_VALUE_TYPES = {ValueType.FILE, ValueType.IMAGE}
 

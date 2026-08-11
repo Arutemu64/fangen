@@ -1,13 +1,16 @@
 import json
 import logging
+from typing import TYPE_CHECKING
 
 from adaptix import Retort
-from requests import Session
 
 from fangen.cosplay2.models.plan import PlanNodeDTO
 from fangen.cosplay2.models.request import RequestDTO
 from fangen.cosplay2.models.topic import TopicDTO, TopicWithFieldsDTO
 from fangen.cosplay2.models.value import RequestValueDTO
+
+if TYPE_CHECKING:
+    from requests import Session
 
 logger = logging.getLogger(__name__)
 

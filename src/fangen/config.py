@@ -1,8 +1,11 @@
 import tomllib
 from dataclasses import dataclass
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from adaptix import Retort
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 @dataclass(slots=True, frozen=True)

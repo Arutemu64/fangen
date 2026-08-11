@@ -4,19 +4,23 @@ import os
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import yt_dlp
 from rich import print
-from sqlalchemy.orm import Session
 from yt_dlp import DownloadError
 
 from fangen.common.utils import build_cosplay2_file_link, build_cosplay2_image_link
 from fangen.common.values import parse_file_value, parse_image_value
-from fangen.config import Config
 from fangen.cosplay2.models.vo import ValueType
-from fangen.db.models import Request, RequestValue
 from fangen.db.repo import get_approved_requests
 from fangen.files.utils import build_file_index, iter_file_values, write_log
+
+if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
+
+    from fangen.config import Config
+    from fangen.db.models import Request, RequestValue
 
 
 class DownloadStatus(enum.StrEnum):
@@ -64,7 +68,7 @@ def _is_up_to_date(file: Path, update_time: str) -> bool:
     """
     try:
         parsed = datetime.strptime(update_time, "%d.%m.%y %H:%M")
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return False
     return datetime.fromtimestamp(file.stat().st_mtime) > parsed
 
@@ -102,7 +106,7 @@ def download_value_file(
 
     try:
         link = parse_download_link(value, request)
-    except (KeyError, ValueError, json.JSONDecodeError):
+    except KeyError, ValueError, json.JSONDecodeError:
         return result(DownloadStatus.FAIL, internal_filename)
     if not link:
         return result(DownloadStatus.FAIL, internal_filename)
@@ -117,7 +121,7 @@ def download_value_file(
         try:
             info = ydl.extract_info(link, download=False)
             ext = Path(ydl.prepare_filename(info)).suffix.lower()
-        except (DownloadError, TypeError):
+        except DownloadError, TypeError:
             return result(DownloadStatus.FAIL, internal_filename, link)
 
         internal_filename = f"{value.id}{ext}"
@@ -133,7 +137,7 @@ def download_value_file(
         _remove_files_by_id(output_dir, value.id)
         try:
             dl_info = ydl.extract_info(link, download=True)
-        except (DownloadError, OSError):
+        except DownloadError, OSError:
             return result(DownloadStatus.FAIL, internal_filename, link)
 
         downloaded = dl_info.get("requested_downloads") if dl_info else None

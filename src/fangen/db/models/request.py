@@ -1,11 +1,17 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from fangen.cosplay2.models.request import RequestDTO
-from fangen.cosplay2.models.vo import RequestStatus
+# mapped_column() de-stringifies this annotation via eval() at class-body
+# time, so it must be a real (non-TYPE_CHECKING) import.
+from fangen.cosplay2.models.vo import RequestStatus  # noqa: TC001
 from fangen.db.models.base import Base
-from fangen.db.models.topic import Topic
 from fangen.db.models.value import RequestValue
+
+if TYPE_CHECKING:
+    from fangen.cosplay2.models.request import RequestDTO
+    from fangen.db.models.topic import Topic
 
 
 class Request(Base):
@@ -26,7 +32,7 @@ class Request(Base):
     )
 
     @classmethod
-    def from_dto(cls, dto: RequestDTO) -> "Request":
+    def from_dto(cls, dto: RequestDTO) -> Request:
         return Request(
             id=dto.id,
             topic_id=dto.topic_id,

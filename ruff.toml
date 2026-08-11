@@ -67,6 +67,9 @@ ignore = [
   # Docstrings are not required for this small private, internal tool.
   "D", # pydocstyle
 
+  # No copyright notice policy for this small private, internal tool.
+  "CPY001", # missing-copyright-notice
+
   # The codebase intentionally contains Cyrillic text in strings, docstrings
   # and comments, so the ambiguous-unicode checks are pure noise here. Only
   # the ambiguous-character rules are silenced; the rest of RUF stays on.

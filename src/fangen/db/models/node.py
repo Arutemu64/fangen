@@ -1,9 +1,15 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from fangen.cosplay2.models.plan import PlanNodeDTO
-from fangen.cosplay2.models.vo import PlanNodeType
+# mapped_column() de-stringifies this annotation via eval() at class-body
+# time, so it must be a real (non-TYPE_CHECKING) import.
+from fangen.cosplay2.models.vo import PlanNodeType  # noqa: TC001
 from fangen.db.models import Base, Request, Topic
+
+if TYPE_CHECKING:
+    from fangen.cosplay2.models.plan import PlanNodeDTO
 
 
 class PlanNode(Base):
@@ -23,10 +29,10 @@ class PlanNode(Base):
     topic: Mapped[Topic | None] = relationship()
 
     parent_id: Mapped[str | None] = mapped_column(ForeignKey("plan.uid"))
-    nodes: Mapped[list["PlanNode"]] = relationship(remote_side=[uid])
+    nodes: Mapped[list[PlanNode]] = relationship(remote_side=[uid])
 
     @classmethod
-    def from_dto(cls, dto: PlanNodeDTO) -> "PlanNode":
+    def from_dto(cls, dto: PlanNodeDTO) -> PlanNode:
         return PlanNode(
             uid=dto.uid,
             type=dto.type,
