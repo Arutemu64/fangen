@@ -1,0 +1,11 @@
+# Taplo (TOML formatter/linter) configuration.
+# https://taplo.tamasfe.dev/configuration/file.html
+include = ["*.toml"]
+
+[formatting]
+indent_string = "    "
+align_entries = false
+array_trailing_comma = true
+array_auto_expand = true
+compact_inline_tables = false
+reorder_keys = false
